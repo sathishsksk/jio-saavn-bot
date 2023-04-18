@@ -1,10 +1,11 @@
 import requests
 import telebot
 import json
+import youtube_dl
 
 TOKEN = 'YOUR_BOT_TOKEN'
 
-bot = telebot.TeleBot(TOKEN)
+bot = '5822625873:AAEwff4upTEbA0nj9B6HSZsukp4kT4POIRc'
 
 # Functions to do extra tasks!
 
@@ -29,16 +30,28 @@ def artist_fetcher(title):
     artist_name = data["data"]["results"][0]["primaryArtists"]
     return artist_name
 
-# downloading the song and saving as f'{title}.mp3'
-
-def song_dl(title):
+def image_fetcher(title):
     response = requests.get(f'{CONST_SONG_LINK}{title}')
     data = response.json()
-    url = data['data']['results'][0]['downloadUrl'][4]['link']
-    responses = requests.get(url)
-    fp = open(f"{title}.mp3", 'wb')
-    fp.write(responses.content)
-    fp.close()
+    image_name = data["data"]["results"][0]["image"]
+    return image_name
+
+# downloading the song and saving as f'{title}.mp3'
+
+
+def song_dl(title):
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': f'{title}.%(ext)s',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '128',
+        }],
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([f'{CONST_SONG_LINK}{title}'])
+
 
 # -------------------- FUNCTION TERMINATION LINE --------------------
 # API endpoint
@@ -66,6 +79,7 @@ def song_request(request):
     try:
         title = song_fetcher(title_input)
         artist = artist_fetcher(title_input)
+        image = image_fetcher(title_input)
         song_dl(title)
         file_to_send = open(f"{title}.mp3", 'rb')
         bot.send_audio(chat_id, file_to_send, caption=f'Title: {title}\n\nArtists: {artist}')
