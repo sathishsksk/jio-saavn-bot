@@ -3,9 +3,9 @@ import telebot
 import json
 import youtube_dl
 
-TOKEN = 'YOUR_BOT_TOKEN'
+TOKEN = '5822625873:AAEwff4upTEbA0nj9B6HSZsukp4kT4POIRc'
 
-bot = '5822625873:AAEwff4upTEbA0nj9B6HSZsukp4kT4POIRc'
+bot = telebot.TeleBot(TOKEN)
 
 # Functions to do extra tasks!
 
@@ -56,7 +56,7 @@ def song_dl(title):
 # -------------------- FUNCTION TERMINATION LINE --------------------
 # API endpoint
 
-CONST_SONG_LINK = 'https://saavn.me/search/songs?query='
+CONST_SONG_LINK = 'https://saavn.me/search/songs?id='
 
 # handeling /start and /help
 
